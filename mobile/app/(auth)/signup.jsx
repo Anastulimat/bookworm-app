@@ -1,10 +1,20 @@
 import {useState} from "react";
 import {Ionicons} from "@expo/vector-icons";
 import {Link, useRouter} from "expo-router";
-import {View, Text, Platform, KeyboardAvoidingView, TextInput, TouchableOpacity, ActivityIndicator} from 'react-native';
+import {
+    View,
+    Text,
+    Platform,
+    KeyboardAvoidingView,
+    TextInput,
+    TouchableOpacity,
+    ActivityIndicator,
+    Alert
+} from 'react-native';
 
 import COLORS from "../../constants/colors";
 import styles from '../../assets/styles/signup.styles';
+import {useAuthStore} from "../../store/authStore";
 
 // ----------------------------------------------------------------------
 
@@ -13,12 +23,17 @@ const SignUp = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
-    const [isLoading, setIsLoading] = useState(false);
+
+    const {user, isLoading, register} = useAuthStore();
+    console.log("User is hear", user);
 
     const router = useRouter();
 
-    const handleSignUp = () => {
-
+    const handleSignUp = async () => {
+        const result = await register(username, email, password);
+        if (!result.success) {
+            Alert.alert("Error", result.error);
+        }
     }
 
 
@@ -48,7 +63,7 @@ const SignUp = () => {
                                 />
                                 <TextInput
                                     style={styles.input}
-                                    placeholder="John Die"
+                                    placeholder="johndoe"
                                     placeholderTextColor={COLORS.placeholderText}
                                     value={username}
                                     onChangeText={setUsername}
