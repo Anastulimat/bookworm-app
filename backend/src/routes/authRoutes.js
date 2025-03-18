@@ -2,6 +2,8 @@ import express from "express";
 import User from "../models/User.js";
 import jwt from "jsonwebtoken";
 
+// ----------------------------------------------------------------------
+
 const router = express.Router();
 
 const generateToken = (userId) => {
@@ -9,6 +11,8 @@ const generateToken = (userId) => {
         process.env.JWT_SECRET, {expiresIn: "15d"}
     );
 };
+
+// ----------------------------------------------------------------------
 
 router.post("/register", async (req, res) => {
     try {
@@ -77,7 +81,6 @@ router.post("/register", async (req, res) => {
         });
     }
 });
-
 
 router.post("/login", async (req, res) => {
     try {

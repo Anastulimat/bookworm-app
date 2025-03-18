@@ -21,11 +21,13 @@ const userSchema = new mongoose.Schema({
         type: String,
         default: "",
     }
+}, {
+    timestamps: true
 });
 
 // Hash the password before saving to the database
 userSchema.pre("save", async function (next) {
-    if(!this.isModified("password")) {
+    if (!this.isModified("password")) {
         return next();
     }
 
