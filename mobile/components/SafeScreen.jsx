@@ -7,7 +7,7 @@ const SafeScreen = ({children}) => {
 
     return (
         <View style={[styles.container, {paddingTop: insets.top}]}>
-            <Text>SafeScreen</Text>
+            {children}
         </View>
     );
 };
