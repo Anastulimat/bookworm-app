@@ -1,7 +1,17 @@
 import {StyleSheet, Text, View} from "react-native";
 import {Link} from "expo-router";
+import {useAuthStore} from "@/store/authStore";
+import {useEffect} from "react";
 
 export default function Index() {
+    const {user, token, checkAuth} = useAuthStore();
+
+    console.log(user, token);
+
+    useEffect(() => {
+        checkAuth();
+    }, []);
+
     return (
         <View
             style={styles.container}
