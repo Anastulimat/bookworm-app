@@ -2,7 +2,6 @@ import {useState} from "react";
 import {
     KeyboardAvoidingView,
     ScrollView,
-    StyleSheet,
     Text,
     View,
     Platform,
@@ -16,6 +15,8 @@ import {useRouter} from "expo-router";
 import styles from "../../assets/styles/create.styles";
 import {Ionicons} from "@expo/vector-icons";
 import COLORS from "../../constants/colors";
+import {useAuthStore} from "../../store/authStore";
+import {API_URL} from "../../constants/api";
 // ----------------------------------------------------------------------
 
 const Create = () => {
@@ -27,6 +28,7 @@ const Create = () => {
     const [loading, setLoading] = useState(false);
 
     const router = useRouter();
+    const {token} = useAuthStore();
 
     const pickImage = async () => {
         try {
@@ -69,6 +71,58 @@ const Create = () => {
     }
 
     const handleSubmit = async () => {
+        if (!title || !caption || !rating) {
+            Alert.alert("Error", "Please fill in all fields");
+            return;
+        }
+
+        try {
+            setLoading(true);
+
+            // Get file extension from URI or default to jpeg
+            const uriParts = image.split(".");
+            const fileType = uriParts[uriParts.length - 1];
+            const imageType = fileType ? `image/${fileType.toLowerCase()}` : "image/jpeg";
+
+            const imageDataUrl = `data:${imageType};base64,${imageBase64}`;
+            console.log(imageDataUrl)
+
+            const response = await fetch(`${API_URL}/books`, {
+                method: "POST",
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    title,
+                    caption,
+                    rating: rating.toString(),
+                    image: JSON.stringify(imageDataUrl),
+                }),
+            });
+
+            const data = await response.json();
+            console.log(data);
+            if (!response.ok) {
+                throw new Error(data?.message || "Something went wrong");
+            }
+
+            Alert.alert("Success", "Your book recommendation has been shared successfully");
+
+            setTitle("");
+            setCaption("");
+            setRating(3);
+            setImage(null);
+            setImageBase64(null);
+
+            router.push("/");
+        } catch (error) {
+            console.error(error);
+            Alert.alert("Error", "There was a problem creating your book recommendation");
+        } finally {
+            setLoading(false);
+        }
+
 
     }
 

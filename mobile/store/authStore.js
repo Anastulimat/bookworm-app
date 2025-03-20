@@ -1,5 +1,6 @@
 import {create} from "zustand";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import {API_URL} from "@/constants/api";
 
 // ----------------------------------------------------------------------
 
@@ -11,7 +12,7 @@ export const useAuthStore = create((set) => ({
     register: async (username, email, password) => {
         set({isLoading: true});
         try {
-            const response = await fetch("https://bookworm-app.onrender.com/api/auth/register", {
+            const response = await fetch(`${API_URL}/auth/register`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -48,7 +49,7 @@ export const useAuthStore = create((set) => ({
         set({isLoading: true});
 
         try {
-            const response = await fetch("https://bookworm-app.onrender.com/api/auth/login", {
+            const response = await fetch(`${API_URL}/auth/login`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
